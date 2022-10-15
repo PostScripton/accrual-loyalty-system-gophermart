@@ -1,9 +1,9 @@
 package server
 
 import (
-	"accrual-loyalty-system-gophermart/internal/middlewares"
-	"accrual-loyalty-system-gophermart/internal/models"
 	"fmt"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/middlewares"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/models"
 	"github.com/labstack/echo/v4"
 )
 

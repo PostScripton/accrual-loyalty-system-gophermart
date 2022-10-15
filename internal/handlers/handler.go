@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"accrual-loyalty-system-gophermart/internal/services"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/services"
 )
 
 type Handler struct {

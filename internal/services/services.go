@@ -1,9 +1,9 @@
 package services
 
 import (
-	"accrual-loyalty-system-gophermart/internal/models"
-	"accrual-loyalty-system-gophermart/internal/repository"
 	"context"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/models"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/repository"
 )
 
 type User interface {

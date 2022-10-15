@@ -1,10 +1,10 @@
 package middlewares
 
 import (
-	"accrual-loyalty-system-gophermart/internal/services"
 	"context"
 	"errors"
 	"fmt"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/services"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"

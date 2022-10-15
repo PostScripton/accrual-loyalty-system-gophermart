@@ -1,8 +1,8 @@
 package server
 
 import (
-	"accrual-loyalty-system-gophermart/internal/handlers"
-	"accrual-loyalty-system-gophermart/internal/services"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/handlers"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/services"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
 )

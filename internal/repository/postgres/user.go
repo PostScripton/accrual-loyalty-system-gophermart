@@ -1,9 +1,9 @@
 package postgres
 
 import (
-	"accrual-loyalty-system-gophermart/internal/models"
 	"context"
 	"errors"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/models"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"time"
