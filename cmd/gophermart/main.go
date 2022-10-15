@@ -1,12 +1,12 @@
 package main
 
 import (
-	"accrual-loyalty-system-gophermart/config"
-	"accrual-loyalty-system-gophermart/internal/repository"
-	"accrual-loyalty-system-gophermart/internal/repository/postgres"
-	"accrual-loyalty-system-gophermart/internal/server"
-	"accrual-loyalty-system-gophermart/internal/services"
 	"context"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/config"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/repository"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/repository/postgres"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/server"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/services"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"os"

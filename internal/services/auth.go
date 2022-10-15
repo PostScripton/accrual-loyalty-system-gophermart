@@ -1,10 +1,10 @@
 package services
 
 import (
-	"accrual-loyalty-system-gophermart/internal/models"
-	"accrual-loyalty-system-gophermart/internal/repository"
 	"context"
 	"errors"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/models"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/repository"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 	"time"

@@ -1,4 +1,4 @@
-module accrual-loyalty-system-gophermart
+module github.com/PostScripton/accrual-loyalty-system-gophermart
 
 go 1.19
 

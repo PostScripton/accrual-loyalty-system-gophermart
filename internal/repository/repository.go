@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"accrual-loyalty-system-gophermart/internal/models"
-	"accrual-loyalty-system-gophermart/internal/repository/postgres"
 	"context"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/models"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/repository/postgres"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
