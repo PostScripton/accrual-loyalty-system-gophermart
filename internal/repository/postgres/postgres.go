@@ -2,11 +2,11 @@ package postgres
 
 import (
 	"context"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 func NewPostgres(ctx context.Context, address string) (*pgxpool.Pool, error) {
-	pool, err := pgxpool.New(ctx, address)
+	pool, err := pgxpool.Connect(ctx, address)
 	if err != nil {
 		return nil, err
 	}
