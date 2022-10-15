@@ -24,6 +24,10 @@ func NewAuthService(repo repository.Users, secret string) *AuthService {
 	}
 }
 
+func (as *AuthService) GetSecret() string {
+	return as.secret
+}
+
 func (as *AuthService) LoginByUser(user *models.User) (string, error) {
 	return as.generateJWT(user)
 }
