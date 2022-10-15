@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/models"
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"time"
 )
 
