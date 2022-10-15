@@ -14,6 +14,9 @@ import (
 
 // go run cmd/gophermart/main.go -d=postgres://homestead:secret@localhost:5432/accrual_loyalty_system
 
+// JWTSecret todo get jwt secret from .env
+const JWTSecret = "OCf7CyrgOfnXT1udxqOOVfC5QSBnkGau"
+
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: "03:04:05PM"})
@@ -28,7 +31,7 @@ func main() {
 	defer db.Close()
 
 	repo := repository.NewRepository(db)
-	newServices := services.NewServices(repo)
+	newServices := services.NewServices(repo, JWTSecret)
 
 	s := server.NewServer(cfg.RunAddress, newServices)
 	s.Run()

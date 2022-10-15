@@ -9,4 +9,5 @@ func (s *Server) registerRoutes() {
 	userGroup := apiGroup.Group("/user")
 
 	userGroup.POST("/register", s.handler.Register)
+	userGroup.POST("/login", s.handler.Login)
 }
