@@ -11,12 +11,19 @@ type User interface {
 	FindByLogin(ctx context.Context, login string) (*models.User, error)
 }
 
-type Services struct {
-	User
+type Auth interface {
+	LoginByUser(user *models.User) (string, error)
+	Login(ctx context.Context, login, password string) (string, error)
 }
 
-func NewServices(repo *repository.Repository) *Services {
+type Services struct {
+	User
+	Auth
+}
+
+func NewServices(repo *repository.Repository, JWTSecret string) *Services {
 	return &Services{
 		User: NewUserService(repo.Users),
+		Auth: NewAuthService(repo.Users, JWTSecret),
 	}
 }
