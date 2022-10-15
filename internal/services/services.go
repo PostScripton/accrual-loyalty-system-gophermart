@@ -12,6 +12,7 @@ type User interface {
 }
 
 type Auth interface {
+	GetSecret() string
 	LoginByUser(user *models.User) (string, error)
 	Login(ctx context.Context, login, password string) (string, error)
 }
