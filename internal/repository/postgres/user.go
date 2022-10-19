@@ -6,7 +6,6 @@ import (
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/models"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"time"
 )
 
 type UserRepository struct {
@@ -20,10 +19,9 @@ func NewUserRepository(db *pgxpool.Pool) *UserRepository {
 }
 
 func (ur *UserRepository) Create(ctx context.Context, login, hashedPassword string) error {
-	sql := `INSERT INTO users (login, password, created_at, updated_at) VALUES ($1, $2, $3, $4);`
+	sql := `INSERT INTO users (login, password) VALUES ($1, $2);`
 
-	now := time.Now()
-	if _, err := ur.db.Exec(ctx, sql, login, hashedPassword, now, now); err != nil {
+	if _, err := ur.db.Exec(ctx, sql, login, hashedPassword); err != nil {
 		return err
 	}
 
