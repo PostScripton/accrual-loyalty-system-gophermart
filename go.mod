@@ -10,6 +10,7 @@ require (
 	github.com/labstack/echo/v4 v4.9.1
 	github.com/rs/zerolog v1.28.0
 	golang.org/x/crypto v0.0.0-20221012134737-56aed061732a
+	golang.org/x/sync v0.1.0
 )
 
 require (
