@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/handlers"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/services"
 	"github.com/labstack/echo/v4"
@@ -26,10 +27,11 @@ func NewServer(address string, services *services.Services) *Server {
 	return s
 }
 
-func (s *Server) Run() {
+func (s *Server) Run() error {
 	log.Info().Str("address", s.address).Msg("The server has just started")
+	return s.core.Start(s.address)
+}
 
-	if err := s.core.Start(s.address); err != nil {
-		log.Fatal().Err(err).Msg("Server error occurred")
-	}
+func (s *Server) Shutdown(ctx context.Context) error {
+	return s.core.Shutdown(ctx)
 }

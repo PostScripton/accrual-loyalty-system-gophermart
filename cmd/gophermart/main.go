@@ -9,7 +9,10 @@ import (
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/services"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"golang.org/x/sync/errgroup"
 	"os"
+	"os/signal"
+	"syscall"
 )
 
 // go run cmd/gophermart/main.go -d=postgres://homestead:secret@localhost:5432/accrual_loyalty_system
@@ -23,7 +26,10 @@ func main() {
 
 	cfg := config.NewConfig()
 
-	db, err := postgres.NewPostgres(context.Background(), cfg.DatabaseURI)
+	mainCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	db, err := postgres.NewPostgres(mainCtx, cfg.DatabaseURI)
 	if err != nil {
 		log.Error().Err(err).Send()
 		return
@@ -34,5 +40,17 @@ func main() {
 	newServices := services.NewServices(repo, JWTSecret)
 
 	s := server.NewServer(cfg.RunAddress, newServices)
-	s.Run()
+
+	g, gCtx := errgroup.WithContext(mainCtx)
+	g.Go(func() error {
+		return s.Run()
+	})
+	g.Go(func() error {
+		<-gCtx.Done()
+		return s.Shutdown(context.Background())
+	})
+
+	if err = g.Wait(); err != nil {
+		log.Info().Msg("The application is shutdown")
+	}
 }
