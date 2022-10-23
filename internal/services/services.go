@@ -20,7 +20,7 @@ type Auth interface {
 
 type Order interface {
 	Create(ctx context.Context, number string, user *models.User) (*models.Order, error)
-	FindByNumber(ctx context.Context, number string, user *models.User) (*models.Order, error)
+	FindByNumber(ctx context.Context, number string) (*models.Order, error)
 	All(ctx context.Context, user *models.User) ([]*models.Order, error)
 	RunPollingStatuses(ctx context.Context) error
 }
