@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/config"
+	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/clients"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/repository"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/repository/postgres"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/server"
@@ -15,7 +16,7 @@ import (
 	"syscall"
 )
 
-// go run cmd/gophermart/main.go -d=postgres://homestead:secret@localhost:5432/accrual_loyalty_system
+// go run cmd/gophermart/main.go -d=postgres://homestead:secret@localhost:5432/accrual_loyalty_system -r=localhost:8081
 
 // JWTSecret todo get jwt secret from .env
 const JWTSecret = "OCf7CyrgOfnXT1udxqOOVfC5QSBnkGau"
@@ -36,8 +37,9 @@ func main() {
 	}
 	defer db.Close()
 
+	client := clients.NewAccrualSystemClient(cfg.AccrualSystemAddress)
 	repo := repository.NewRepository(db)
-	newServices := services.NewServices(repo, JWTSecret)
+	newServices := services.NewServices(repo, client, JWTSecret)
 
 	s := server.NewServer(cfg.RunAddress, newServices)
 
@@ -48,6 +50,13 @@ func main() {
 	g.Go(func() error {
 		<-gCtx.Done()
 		return s.Shutdown(context.Background())
+	})
+	g.Go(func() error {
+		if err = newServices.Order.RunPollingStatuses(mainCtx); err != nil {
+			log.Error().Err(err).Msg("Failed polling statuses")
+			return err
+		}
+		return nil
 	})
 
 	if err = g.Wait(); err != nil {
