@@ -52,7 +52,7 @@ func (as *AuthService) generateJWT(user *models.User) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
-	claims["exp"] = time.Now().Add(30 * time.Minute).Unix()
+	claims["exp"] = time.Now().Add(24 * 60 * time.Minute).Unix()
 	claims["iat"] = time.Now().Unix()
 	claims["sub"] = user.Login
 
