@@ -6,15 +6,14 @@ import (
 	"fmt"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/models"
 	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"time"
 )
 
 type OrderRepository struct {
-	db *pgxpool.Pool
+	db *Postgres
 }
 
-func NewOrderRepository(db *pgxpool.Pool) *OrderRepository {
+func NewOrderRepository(db *Postgres) *OrderRepository {
 	return &OrderRepository{
 		db: db,
 	}
