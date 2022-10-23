@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/services"
@@ -26,7 +25,7 @@ func (middleware *Auth) Handle(next echo.HandlerFunc) echo.HandlerFunc {
 		token, err := middleware.parseJWT(tokenString)
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			user, err := middleware.Services.User.FindByLogin(context.TODO(), claims["sub"].(string))
+			user, err := middleware.Services.User.FindByLogin(c.Request().Context(), claims["sub"].(string))
 			if err != nil || user == nil {
 				log.Error().Err(err).Msg("Finding user after valid JWT")
 				return echo.NewHTTPError(http.StatusUnauthorized)

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/services"
@@ -27,7 +26,7 @@ func (h *Handler) Register(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("The %s is %s", err.Field(), err.Tag()))
 	}
 
-	user, err := h.services.User.Create(context.TODO(), creds.Login, creds.Password)
+	user, err := h.services.User.Create(c.Request().Context(), creds.Login, creds.Password)
 	if err != nil {
 		if errors.Is(err, services.ErrLoginTaken) {
 			return echo.NewHTTPError(http.StatusConflict, "This login is already taken")
