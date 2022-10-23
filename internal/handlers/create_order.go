@@ -28,7 +28,7 @@ func (h *Handler) CreateOrder(c echo.Context) error {
 	}
 
 	user := c.Get("user").(*models.User)
-	order, err := h.services.Order.FindByNumber(context.TODO(), number, user)
+	order, err := h.services.Order.FindByNumber(context.TODO(), number)
 	if err != nil {
 		log.Error().Err(err).Msg("Find order by numberBytes")
 		return echo.NewHTTPError(http.StatusInternalServerError)

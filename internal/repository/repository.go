@@ -14,7 +14,7 @@ type Users interface {
 type Orders interface {
 	Create(ctx context.Context, number string, user *models.User) error
 	Update(ctx context.Context, order *models.Order) error
-	FindByNumber(ctx context.Context, number string, user *models.User) (*models.Order, error)
+	FindByNumber(ctx context.Context, number string) (*models.Order, error)
 	All(ctx context.Context, user *models.User) ([]*models.Order, error)
 	AllPending(ctx context.Context) ([]*models.Order, error)
 }

@@ -9,12 +9,12 @@ func (s *Server) registerRoutes() {
 	userGroup := apiGroup.Group("/user")
 
 	authMiddleware := &middlewares.Auth{Services: s.services}
-	authGroup := userGroup.Group("", authMiddleware.Handle)
+	//authGroup := userGroup.Group("", authMiddleware.Handle)
 	simpleAuthGroup := s.core.Group("/api/user", authMiddleware.Handle)
 
 	userGroup.POST("/register", s.handler.Register)
 	userGroup.POST("/login", s.handler.Login)
 
 	simpleAuthGroup.POST("/orders", s.handler.CreateOrder)
-	authGroup.GET("/orders", s.handler.GetOrders)
+	simpleAuthGroup.GET("/orders", s.handler.GetOrders)
 }

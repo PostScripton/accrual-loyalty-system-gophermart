@@ -33,5 +33,5 @@ func (h *Handler) Login(c echo.Context) error {
 	}
 
 	c.Response().Header().Set("Authorization", fmt.Sprintf("Bearer %s", token))
-	return c.NoContent(http.StatusNoContent)
+	return c.NoContent(http.StatusOK)
 }

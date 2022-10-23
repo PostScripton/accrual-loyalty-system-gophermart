@@ -26,11 +26,20 @@ func (os *OrderService) Create(ctx context.Context, number string, user *models.
 		return nil, err
 	}
 
-	return os.FindByNumber(ctx, number, user)
+	order, err := os.FindByNumber(ctx, number)
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err = os.PollStatus(ctx, order); err != nil {
+		return nil, err
+	}
+
+	return order, nil
 }
 
-func (os *OrderService) FindByNumber(ctx context.Context, number string, user *models.User) (*models.Order, error) {
-	return os.repo.FindByNumber(ctx, number, user)
+func (os *OrderService) FindByNumber(ctx context.Context, number string) (*models.Order, error) {
+	return os.repo.FindByNumber(ctx, number)
 }
 
 func (os *OrderService) All(ctx context.Context, user *models.User) ([]*models.Order, error) {
@@ -53,6 +62,29 @@ func (os *OrderService) RunPollingStatuses(ctx context.Context) error {
 	}
 }
 
+func (os *OrderService) PollStatus(ctx context.Context, order *models.Order) (bool, error) {
+	resp, err := os.client.GetOrderInfo(ctx, order.Number)
+	if err != nil {
+		return false, err
+	}
+	if resp == nil {
+		return false, nil
+	}
+
+	if order.Status == resp.Status {
+		return false, nil
+	}
+
+	order.Status = resp.Status
+	order.Accrual = resp.Accrual
+
+	if err = os.repo.Update(ctx, order); err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
 func (os *OrderService) pollStatuses(ctx context.Context) error {
 	if err := os.client.CanMakeRequest(); err != nil {
 		log.Debug().Err(err).Msg("Client cannot make a request")
@@ -65,26 +97,13 @@ func (os *OrderService) pollStatuses(ctx context.Context) error {
 	}
 
 	for _, order := range collection {
-		resp, err := os.client.GetOrderInfo(ctx, order.Number)
+		updated, err := os.PollStatus(ctx, order)
 		if err != nil {
 			return err
 		}
-		if resp == nil {
-			continue
+		if updated {
+			log.Info().Int("order_id", order.ID).Msg("Order has been updated")
 		}
-
-		if order.Status == resp.Status {
-			continue
-		}
-
-		order.Status = resp.Status
-		order.Accrual = resp.Accrual
-
-		if err := os.repo.Update(ctx, order); err != nil {
-			return err
-		}
-
-		log.Info().Int("order_id", order.ID).Msg("Order has been updated")
 	}
 
 	return nil

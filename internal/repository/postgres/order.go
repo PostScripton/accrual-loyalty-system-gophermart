@@ -39,12 +39,12 @@ func (or *OrderRepository) Update(ctx context.Context, order *models.Order) erro
 	return nil
 }
 
-func (or *OrderRepository) FindByNumber(ctx context.Context, number string, user *models.User) (*models.Order, error) {
-	sql := `SELECT id, user_id, number, status, accrual, created_at, updated_at FROM orders WHERE number = $1 AND user_id = $2;`
+func (or *OrderRepository) FindByNumber(ctx context.Context, number string) (*models.Order, error) {
+	sql := `SELECT id, user_id, number, status, accrual, created_at, updated_at FROM orders WHERE number = $1;`
 
 	order := new(models.Order)
 
-	row := or.db.QueryRow(ctx, sql, number, user.ID)
+	row := or.db.QueryRow(ctx, sql, number)
 	if err := row.Scan(
 		&order.ID,
 		&order.UserID,
