@@ -9,7 +9,7 @@ func (s *Server) registerRoutes() {
 	userGroup := apiGroup.Group("/user")
 
 	authMiddleware := &middlewares.Auth{Services: s.services}
-	//authGroup := userGroup.Group("", authMiddleware.Handle)
+	authGroup := userGroup.Group("", authMiddleware.Handle)
 	simpleAuthGroup := s.core.Group("/api/user", authMiddleware.Handle)
 
 	userGroup.POST("/register", s.handler.Register)
@@ -17,4 +17,8 @@ func (s *Server) registerRoutes() {
 
 	simpleAuthGroup.POST("/orders", s.handler.CreateOrder)
 	simpleAuthGroup.GET("/orders", s.handler.GetOrders)
+
+	simpleAuthGroup.GET("/balance", s.handler.Balance)
+	authGroup.POST("/balance/withdraw", s.handler.Withdraw)
+	simpleAuthGroup.GET("/withdrawals", s.handler.GetWithdrawals)
 }

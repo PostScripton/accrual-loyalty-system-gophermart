@@ -2,6 +2,8 @@ package services
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/clients"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/models"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/repository"
@@ -11,12 +13,14 @@ import (
 
 type OrderService struct {
 	repo   repository.Orders
+	users  repository.Users
 	client *clients.AccrualSystemClient
 }
 
-func NewOrderService(repo repository.Orders, client *clients.AccrualSystemClient) *OrderService {
+func NewOrderService(repo repository.Orders, users repository.Users, client *clients.AccrualSystemClient) *OrderService {
 	return &OrderService{
 		repo:   repo,
+		users:  users,
 		client: client,
 	}
 }
@@ -47,7 +51,7 @@ func (os *OrderService) All(ctx context.Context, user *models.User) ([]*models.O
 }
 
 func (os *OrderService) RunPollingStatuses(ctx context.Context) error {
-	ticker := time.NewTicker(30 * time.Second)
+	ticker := time.NewTicker(5 * time.Second)
 	defer ticker.Stop()
 
 	for {
@@ -65,7 +69,7 @@ func (os *OrderService) RunPollingStatuses(ctx context.Context) error {
 func (os *OrderService) PollStatus(ctx context.Context, order *models.Order) (bool, error) {
 	resp, err := os.client.GetOrderInfo(ctx, order.Number)
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("get order info: %w", err)
 	}
 	if resp == nil {
 		return false, nil
@@ -79,6 +83,16 @@ func (os *OrderService) PollStatus(ctx context.Context, order *models.Order) (bo
 	order.Accrual = resp.Accrual
 
 	if err = os.repo.Update(ctx, order); err != nil {
+		return false, err
+	}
+
+	user, err := os.users.Find(ctx, order.UserID)
+	if err != nil {
+		return false, err
+	}
+	user.Balance += *order.Accrual
+
+	if err = os.users.Update(ctx, user); err != nil {
 		return false, err
 	}
 

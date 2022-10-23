@@ -25,6 +25,12 @@ type Order interface {
 	RunPollingStatuses(ctx context.Context) error
 }
 
+type Withdrawal interface {
+	Create(ctx context.Context, withdrawal *models.Withdrawal, user *models.User) error
+	Sum(ctx context.Context, user *models.User) (float64, error)
+	All(ctx context.Context, user *models.User) ([]*models.Withdrawal, error)
+}
+
 type Luhn interface {
 	Valid(number int) bool
 }
@@ -33,14 +39,16 @@ type Services struct {
 	User
 	Auth
 	Order
+	Withdrawal
 	Luhn
 }
 
 func NewServices(repo *repository.Repository, client *clients.AccrualSystemClient, JWTSecret string) *Services {
 	return &Services{
-		User:  NewUserService(repo.Users),
-		Auth:  NewAuthService(repo.Users, JWTSecret),
-		Order: NewOrderService(repo.Orders, client),
-		Luhn:  &LuhnAlgo{},
+		User:       NewUserService(repo.Users),
+		Auth:       NewAuthService(repo.Users, JWTSecret),
+		Order:      NewOrderService(repo.Orders, repo.Users, client),
+		Withdrawal: NewWithdrawalService(repo.Withdrawals, repo.Users),
+		Luhn:       &LuhnAlgo{},
 	}
 }
