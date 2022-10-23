@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/services"
@@ -22,7 +21,7 @@ func (h *Handler) Login(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("The %s is %s", err.Field(), err.Tag()))
 	}
 
-	token, err := h.services.Auth.Login(context.TODO(), creds.Login, creds.Password)
+	token, err := h.services.Auth.Login(c.Request().Context(), creds.Login, creds.Password)
 	if err != nil {
 		if errors.Is(err, services.ErrCredentials) {
 			return echo.NewHTTPError(http.StatusUnauthorized, "These credentials don't match our records")

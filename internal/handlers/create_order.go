@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"context"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/models"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
@@ -28,7 +27,7 @@ func (h *Handler) CreateOrder(c echo.Context) error {
 	}
 
 	user := c.Get("user").(*models.User)
-	order, err := h.services.Order.FindByNumber(context.TODO(), number)
+	order, err := h.services.Order.FindByNumber(c.Request().Context(), number)
 	if err != nil {
 		log.Error().Err(err).Msg("Find order by numberBytes")
 		return echo.NewHTTPError(http.StatusInternalServerError)
@@ -41,7 +40,7 @@ func (h *Handler) CreateOrder(c echo.Context) error {
 		}
 	}
 
-	if _, err = h.services.Order.Create(context.TODO(), number, user); err != nil {
+	if _, err = h.services.Order.Create(c.Request().Context(), number, user); err != nil {
 		log.Error().Err(err).Msg("Create order")
 		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
