@@ -5,14 +5,13 @@ import (
 	"errors"
 	"github.com/PostScripton/accrual-loyalty-system-gophermart/internal/models"
 	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type UserRepository struct {
-	db *pgxpool.Pool
+	db *Postgres
 }
 
-func NewUserRepository(db *pgxpool.Pool) *UserRepository {
+func NewUserRepository(db *Postgres) *UserRepository {
 	return &UserRepository{
 		db: db,
 	}

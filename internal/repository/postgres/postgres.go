@@ -5,20 +5,32 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-func NewPostgres(ctx context.Context, address string) (*pgxpool.Pool, error) {
+type Postgres struct {
+	*pgxpool.Pool
+}
+
+func NewPostgres(ctx context.Context, address string) (*Postgres, error) {
 	pool, err := pgxpool.Connect(ctx, address)
 	if err != nil {
 		return nil, err
 	}
 
+	db := &Postgres{
+		pool,
+	}
+
 	go func() {
 		<-ctx.Done()
-		pool.Close()
+		db.Close()
 	}()
 
 	if err = pool.Ping(ctx); err != nil {
 		return nil, err
 	}
 
-	return pool, nil
+	if err = db.MigrateAllMigrations(ctx); err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }
