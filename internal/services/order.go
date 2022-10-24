@@ -59,7 +59,7 @@ func (os *OrderService) RunPollingStatuses(ctx context.Context) error {
 		case <-ctx.Done():
 			return ctx.Err()
 		case <-ticker.C:
-			if err := os.pollStatuses(ctx); err != nil {
+			if err := os.pollStatuses(ctx); err != nil && !errors.Is(err, clients.ErrAccrualSystemIsUnavailable) {
 				return err
 			}
 		}
