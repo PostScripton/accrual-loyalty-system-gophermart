@@ -2,6 +2,7 @@ package clients
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/rs/zerolog/log"
@@ -20,6 +21,8 @@ type AccrualSystemClient struct {
 	retryAt *time.Time
 }
 
+var ErrAccrualSystemIsUnavailable = errors.New("accrual system is unavailable")
+
 func NewAccrualSystemClient(baseURL string) *AccrualSystemClient {
 	return &AccrualSystemClient{
 		client: resty.New().SetBaseURL(baseURL),
@@ -34,17 +37,17 @@ func (asc *AccrualSystemClient) GetOrderInfo(ctx context.Context, number string)
 		SetResult(order).
 		Get(fmt.Sprintf("/api/orders/%s", number))
 	if err != nil {
-		return nil, err
+		return nil, ErrAccrualSystemIsUnavailable
 	}
 	if err = asc.blocked(resp); err != nil {
 		return nil, err
 	}
 
 	log.Debug().
-		Int("code", resp.StatusCode()).
 		Str("status", resp.Status()).
 		Str("msg", string(resp.Body())).
-		Send()
+		Str("order", number).
+		Msg("Polling order status")
 
 	if resp.StatusCode() == http.StatusNoContent {
 		return nil, nil

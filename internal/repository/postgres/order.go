@@ -81,7 +81,7 @@ func (or *OrderRepository) All(ctx context.Context, user *models.User) ([]*model
 
 	collection, err := or.scanOrdersCollection(rows, count)
 	if err != nil {
-		return []*models.Order{}, nil
+		return []*models.Order{}, err
 	}
 
 	return collection, nil
